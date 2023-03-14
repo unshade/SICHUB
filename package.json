@@ -19,6 +19,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@heroicons/react": "^2.0.16",
         "@tailwindcss/aspect-ratio": "^0.4.2"
     }
 }
