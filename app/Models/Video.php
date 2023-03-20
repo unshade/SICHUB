@@ -14,5 +14,6 @@ class Video extends Model
         'description',
         'url',
         'thumbnail',
+        'path',
     ];
 }

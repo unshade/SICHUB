@@ -10,4 +10,5 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: { hmr: { protocol: 'ws', host: 'localhost' } },
 });

@@ -37,7 +37,7 @@ export default function Authenticated({ auth, header, children }) {
                                         href={route("dashboard")}
                                         active={route().current("dashboard")}
                                     >
-                                        Dashboard
+                                        SIC1
                                     </NavLink>
                                     <NavLink
                                         href={route("upload")}
@@ -160,7 +160,7 @@ export default function Authenticated({ auth, header, children }) {
                                 href={route("dashboard")}
                                 active={route().current("dashboard")}
                             >
-                                Dashboard
+                                SIC1
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 href={route("upload")}
