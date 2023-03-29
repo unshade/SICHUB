@@ -1,7 +1,14 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import {Head} from "@inertiajs/react";
+import {FolderIcon} from "@heroicons/react/24/outline";
 
 export default function Dashboard(props) {
+    const folders = [
+        {
+            title: "Folder 1",
+            size: "3.9 MB",
+        }
+    ];
     const files = [
         {
             title: "IMG_4985.HEIC",
@@ -49,7 +56,7 @@ export default function Dashboard(props) {
                 </h2>
             }
         >
-            <Head title="SIC1" />
+            <Head title="SIC1"/>
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -57,9 +64,37 @@ export default function Dashboard(props) {
                         role="list"
                         className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
                     >
+                        {folders.map((folder) => (
+                            <li key={folder.title} className="relative">
+                                <div
+                                    className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-slate-700 focus-within:ring-2 focus-within:ring-gray-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                                    <FolderIcon
+                                        className="pointer-events-none object-cover group-hover:opacity-75 text-white"
+                                        aria-hidden="true"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-0 focus:outline-none "
+                                    >
+                                        <span className="sr-only">
+                                            View details for {folder.title}
+                                        </span>
+                                    </button>
+                                </div>
+                                <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 dark:text-gray-200">
+                                    {folder.title}
+                                </p>
+                                <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {folder.size}
+                                </p>
+                            </li>
+                        ))}
+
+
                         {files.map((file) => (
                             <li key={file.source} className="relative">
-                                <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-gray-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                                <div
+                                    className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-gray-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
                                     <img
                                         src={file.source}
                                         alt=""

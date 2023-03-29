@@ -1,9 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { useState } from "react";
+import {Head} from "@inertiajs/react";
+import {useState} from "react";
 
 export default function Upload(props) {
     const [selected, setSelected] = useState("SIC1");
+    const [course, setCourse] = useState("");
     console.log(selected);
     return (
         <AuthenticatedLayout
@@ -15,7 +16,7 @@ export default function Upload(props) {
                 </h2>
             }
         >
-            <Head title="Upload" />
+            <Head title="Upload"/>
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -33,7 +34,8 @@ export default function Upload(props) {
                                 </div>
 
                                 <div className="space-y-6 sm:space-y-5">
-                                    <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <div
+                                        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                                         <label
                                             htmlFor="country"
                                             className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
@@ -56,12 +58,13 @@ export default function Upload(props) {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <div
+                                        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                                         <label
                                             htmlFor="username"
                                             className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
                                         >
-                                            Nom de la vidéo
+                                            Dossier
                                         </label>
                                         <div className="mt-2 sm:col-span-2 sm:mt-0">
                                             <div className="flex max-w-lg rounded-md shadow-sm">
@@ -75,12 +78,40 @@ export default function Upload(props) {
                                                     id="username"
                                                     autoComplete="username"
                                                     className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                                    onChange={(e) => {
+                                                        setCourse(e.target.value);
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                        <label
+                                            htmlFor="username"
+                                            className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
+                                        >
+                                            Nom de la vidéo
+                                        </label>
+                                        <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                            <div className="flex max-w-lg rounded-md shadow-sm">
+                                                <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 px-3 dark:text-gray-300 text-gray-500
+                                                sm:text-sm">
+                                                    {selected}/{course}/
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    name="username"
+                                                    id="username"
+                                                    autoComplete="username"
+                                                    className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
                                                 />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <div
+                                        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                                         <label
                                             htmlFor="about"
                                             className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
@@ -101,7 +132,8 @@ export default function Upload(props) {
                                         </div>
                                     </div>
 
-                                    <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <div
+                                        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                                         <label
                                             htmlFor="cover-photo"
                                             className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
@@ -109,7 +141,8 @@ export default function Upload(props) {
                                             Source de la vidéo
                                         </label>
                                         <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                            <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                                            <div
+                                                className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                                                 <div className="space-y-1 text-center">
                                                     <svg
                                                         className="mx-auto h-12 w-12 text-gray-400"
