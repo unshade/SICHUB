@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\FolderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,13 +27,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard/folder/{name}', function (string $name) {
+    return Inertia::render('Folder', [
+        'name' => $name,
+    ]);
+})->middleware(['auth', 'verified'])->name('folder');
+
+Route::get('/dashboard', [FolderController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/upload', function () {
     return Inertia::render('Upload');
 })->middleware(['auth', 'verified'])->name('upload');
+
+Route::post('/upload', [VideoController::class, 'store'])->middleware(['auth', 'verified'])->name('upload.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

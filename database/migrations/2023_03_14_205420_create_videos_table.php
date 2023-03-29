@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('url');
             $table->string('path');
             $table->string('thumbnail');
+            $table->string('folder');
+            $table->string('subfolder');
             $table->timestamps();
         });
     }
