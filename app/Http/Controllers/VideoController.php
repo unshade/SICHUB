@@ -11,14 +11,12 @@ use Inertia\Inertia;
 class VideoController extends Controller
 {
 
-    function index()
+    function index($folderName, $subfolderName, $id)
     {
-
-    }
-
-    function update()
-    {
-
+        $video = Video::where('folder', $folderName)->where('subfolder', $subfolderName)->where('id', $id)->first();
+        return Inertia::render('Video', [
+            'video' => $video,
+        ]);
     }
 
     function store(Request $request)

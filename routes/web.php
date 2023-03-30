@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubfolderController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,13 +29,12 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard/folder/{name}', function (string $name) {
-    return Inertia::render('Folder', [
-        'name' => $name,
-    ]);
-})->middleware(['auth', 'verified'])->name('folder');
+Route::get('/dashboard/{name}', [FolderController::class, 'index'])->middleware(['auth', 'verified'])->name('folder');
+Route::get('/dashboard/{folderName}/{subfolderName}', [SubfolderController::class, 'index'])->middleware(['auth', 'verified'])->name('subfolder');
+Route::get('/dashboard/{folderName}/{subfolderName}/{id}', [VideoController::class, 'index'])->middleware(['auth', 'verified'])->name('subfolder');
 
-Route::get('/dashboard', [FolderController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/upload', function () {
     return Inertia::render('Upload');

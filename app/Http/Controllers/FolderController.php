@@ -9,11 +9,15 @@ use Inertia\Inertia;
 class FolderController extends Controller
 {
     //
-    public function index()
+    public function index($name)
     {
-        $videos = Video::all();
-        return Inertia::render('Dashboard', [
+        $videos = Video::where('folder', $name)->get();
+        $subFoldersNames = Video::select('subfolder')->where('folder', $name)->distinct()->get();
+
+        return Inertia::render('Folder', [
+            'name' => $name,
             'videos' => $videos,
+            'subFoldersNames' => $subFoldersNames,
         ]);
     }
 }
