@@ -1,8 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, useForm, router } from "@inertiajs/react";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
+import { HandThumbUpIcon, HandThumbDownIcon } from "@heroicons/react/24/outline";
 
 export default function Video(props) {
+    const [like, setLike] = useState(props.stats.liked);
+    const [dislike, setDislike] = useState(props.stats.disliked);
+
     return (
         <AuthenticatedLayout
             auth={props.auth}
@@ -16,13 +21,108 @@ export default function Video(props) {
             <Head title={props.folderName} />
             <div className="py-12">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    <video
-                        controls
-                        className="w-full h-auto"
-                        preload="metadata"
+                    <div
+                        className="relative h-0"
+                        style={{ paddingBottom: "56.25%" }}
                     >
-                        <source src={`/video/${props.video.id}`} type="video/mp4" />
-                    </video>
+                        <ReactPlayer
+                            url={`/video/${props.video.id}`}
+                            width="100%"
+                            height="100%"
+                            controls
+                            className="absolute top-0 left-0"
+                        />
+                    </div>
+                    <div className="flex justify-between mt-4">
+                        <div className="dark:text-stone-200">
+                            <button
+                                className={`mr-4 ${
+                                    like
+                                        ? "text-blue-500 font-bold"
+                                        : "text-gray-500"
+                                }`}
+                                onClick={() => {
+                                    setLike(true);
+                                    setDislike(false);
+                                    router.post(
+                                        `/video/${props.video.id}/like`,
+                                        { like: true, dislike: false }
+                                    );
+                                }}
+                            >
+                                <span className="flex items-center">
+                                    <HandThumbUpIcon className="h-5 w-5 mr-1" />
+                                    {like ? "Liked" : "Like"}
+                                </span>
+                                <span
+                                    className={`ml-1 ${
+                                        like
+                                            ? "text-blue-500 font-bold"
+                                            : "text-gray-500"
+                                    }`}
+                                >
+                                    {props.video.likes}
+                                </span>
+                            </button>
+                            <button
+                                className={`${
+                                    dislike
+                                        ? "text-red-500 font-bold"
+                                        : "text-gray-500"
+                                }`}
+                                onClick={() => {
+                                    setLike(false);
+                                    setDislike(true);
+                                    router.post(
+                                        `/video/${props.video.id}/like`,
+                                        { like: false, dislike: true }
+                                    );
+                                }}
+                            >
+                                <span className="flex items-center">
+                                    <HandThumbDownIcon className="h-5 w-5 mr-1" />
+                                    {dislike ? "Disliked" : "Dislike"}
+                                </span>
+                                <span
+                                    className={`ml-1 ${
+                                        dislike
+                                            ? "text-red-500 font-bold"
+                                            : "text-gray-500"
+                                    }`}
+                                >
+                                    {props.video.dislikes}
+                                </span>
+                            </button>
+                        </div>
+
+                        {/* <div className="dark:text-stone-200">
+                            {comments.length} Comment
+                            {comments.length !== 1 && "s"}
+                        </div> */}
+                    </div>
+                    {/* <div className="mt-4">
+                        <form onSubmit={handleCommentSubmit}>
+                            <textarea
+                                className="w-full h-20 p-2 border rounded"
+                                value={comment}
+                                onChange={handleCommentChange}
+                                placeholder="Add a comment..."
+                            />
+                            <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">
+                                Comment
+                            </button>
+                        </form>
+                        <div className="mt-4">
+                            {comments.map((comment, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-gray-100 rounded-lg p-2"
+                                >
+                                    {comment}
+                                </div>
+                            ))}
+                        </div>
+                    </div> */}
                 </div>
             </div>
         </AuthenticatedLayout>

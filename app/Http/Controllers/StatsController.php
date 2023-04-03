@@ -44,14 +44,4 @@ class StatsController extends Controller
             ]
         );
     }
-
-
-
-
-
-    public function videoStats(Request $request)
-    {
-        $user = $request->user();
-
-    }
 }

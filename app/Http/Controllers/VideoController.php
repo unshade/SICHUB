@@ -16,8 +16,10 @@ class VideoController extends Controller
     {
         $video = Video::where('folder', $folderName)->where('subfolder', $subfolderName)->where('id', $id)->first();
 
+        $stats = Stats::where('video_id', $id)->first();
         return Inertia::render('Video', [
             'video' => $video,
+            'stats' => $stats,
         ]);
     }
     function serve(Request $request, $id)
@@ -129,8 +131,19 @@ class VideoController extends Controller
     }
 
 
-    function destroy()
+    function like(Request $request, $id)
     {
-
+        $body = $request->all();
+        $like = $body['like'];
+        $dislike = $body['dislike'];
+        $user = $request->user();
+        $video = Video::where('id', $id)->first();
+        $userId = $user->id;
+        $videoId = $video->id;
+        Stats::updateOrCreate(
+            ['user_id' => $userId, 'video_id' => $videoId],
+            ['liked' => $like, 'disliked' => $dislike]
+        );
+        return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
     }
 }

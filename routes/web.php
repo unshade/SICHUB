@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/{name}', [FolderController::class, 'index'])->name('folder');
         Route::get('/{folderName}/{subfolderName}', [SubfolderController::class, 'index'])->name('subfolder');
-        Route::get('/{folderName}/{subfolderName}/{id}', [VideoController::class, 'index'])->name('subfolder');
+        Route::get('/{folderName}/{subfolderName}/{id}', [VideoController::class, 'index'])->name('video.page');
     });
 
     Route::get('/upload', function () {
@@ -53,7 +53,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('stats')->group(function () {
         Route::get('/', [StatsController::class, 'index'])->name('stats');
     });
-    Route::get('/video/{id}', [VideoController::class, 'serve'])->name('storage.serve');
+    Route::prefix('video')->group(function () {
+        Route::get('/{id}', [VideoController::class, 'serve'])->name('storage.serve');
+        Route::post('/{id}/like', [VideoController::class, 'like'])->name('video.like');
+    });
 });
 
 
