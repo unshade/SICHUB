@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Stats;
 use App\Models\Video;
 use Illuminate\Http\Request;
@@ -15,11 +16,13 @@ class VideoController extends Controller
     function index($folderName, $subfolderName, $id)
     {
         $video = Video::where('folder', $folderName)->where('subfolder', $subfolderName)->where('id', $id)->first();
-
         $stats = Stats::where('video_id', $id)->first();
+        // get comments joined with user (only select name and email)
+        $comments = Comment::where('video_id', $id)->with('user:id,name,email')->get();
         return Inertia::render('Video', [
             'video' => $video,
             'stats' => $stats,
+            'comments' => $comments,
         ]);
     }
     function serve(Request $request, $id)
@@ -144,6 +147,25 @@ class VideoController extends Controller
             ['user_id' => $userId, 'video_id' => $videoId],
             ['liked' => $like, 'disliked' => $dislike]
         );
+        return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
+    }
+
+    function commentStore(Request $request, $id)
+    {
+        $request->validate([
+            'comment' => 'required|string|max:255',
+        ]);
+        $body = $request->all();
+        $comment = $body['comment'];
+        $user = $request->user();
+        $video = Video::where('id', $id)->first();
+        $userId = $user->id;
+        $videoId = $video->id;
+        Comment::create([
+            'user_id' => $userId,
+            'video_id' => $videoId,
+            'content' => $comment,
+        ]);
         return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
     }
 }

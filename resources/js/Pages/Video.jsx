@@ -2,11 +2,28 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, router } from "@inertiajs/react";
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-import { HandThumbUpIcon, HandThumbDownIcon } from "@heroicons/react/24/outline";
+import {
+    HandThumbUpIcon,
+    HandThumbDownIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Video(props) {
-    const [like, setLike] = useState(props.stats.liked);
-    const [dislike, setDislike] = useState(props.stats.disliked);
+    const [like, setLike] = useState(props.stats?.liked ? props.stats.liked : false);
+    const [dislike, setDislike] = useState(props.stats?.disliked ? props.stats.disliked : false);
+    console.log(props.comments);
+    const {data, setData, post, processing, errors, reset} = useForm({
+        comment: "",
+    });
+    const handleCommentSubmit = (e) => {
+        e.preventDefault();
+        post(`/video/${props.video.id}/comment`, {
+            id: props.video.id,
+            preserveScroll: true,
+            onSuccess: () => {
+                reset("comment");
+            },
+        });
+    }
 
     return (
         <AuthenticatedLayout
@@ -95,17 +112,17 @@ export default function Video(props) {
                             </button>
                         </div>
 
-                        {/* <div className="dark:text-stone-200">
-                            {comments.length} Comment
-                            {comments.length !== 1 && "s"}
-                        </div> */}
+                        <div className="dark:text-stone-200">
+                            {props.comments.length} Comment
+                            {props.comments.length !== 1 && "s"}
+                        </div>
                     </div>
-                    {/* <div className="mt-4">
+                    <div className="mt-4">
                         <form onSubmit={handleCommentSubmit}>
                             <textarea
                                 className="w-full h-20 p-2 border rounded"
-                                value={comment}
-                                onChange={handleCommentChange}
+                                value={data.comment}
+                                onChange={(e) => setData("comment", e.target.value)}
                                 placeholder="Add a comment..."
                             />
                             <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">
@@ -113,16 +130,16 @@ export default function Video(props) {
                             </button>
                         </form>
                         <div className="mt-4">
-                            {comments.map((comment, index) => (
+                            {props.comments.map((comment, index) => (
                                 <div
                                     key={index}
                                     className="bg-gray-100 rounded-lg p-2"
                                 >
-                                    {comment}
+                                    {comment.user.name} : {comment.content}
                                 </div>
                             ))}
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

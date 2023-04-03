@@ -50,13 +50,13 @@ function UserModal({ userName, userId, userStats, onClose }) {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {stat.video_title}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${stat.watched && "text-green-600"}`}>
                                                 {stat.watched ? "Yes" : "No"}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${stat.liked && "text-green-600"}`}>
                                                 {stat.liked ? "Yes" : "No"}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${stat.disliked && "text-red-600"}`}>
                                                 {stat.disliked ? "Yes" : "No"}
                                             </td>
                                         </tr>

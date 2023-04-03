@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('video')->group(function () {
         Route::get('/{id}', [VideoController::class, 'serve'])->name('storage.serve');
         Route::post('/{id}/like', [VideoController::class, 'like'])->name('video.like');
+        Route::post('/{id}/comment', [VideoController::class, 'commentStore'])->name('video.comment.store');
     });
 });
 
