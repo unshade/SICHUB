@@ -13,6 +13,8 @@ export default function Authenticated({ auth, header, children }) {
         document.querySelector("html").classList.contains("dark")
     );
 
+    const userRole = auth.user.role;
+
     const toggleTheme = () => {
         const html = document.querySelector("html");
         html.classList.toggle("dark");
@@ -39,12 +41,26 @@ export default function Authenticated({ auth, header, children }) {
                                     >
                                         Dashboard
                                     </NavLink>
-                                    <NavLink
-                                        href={route("upload")}
-                                        active={route().current("upload")}
-                                    >
-                                        Upload
-                                    </NavLink>
+                                    {userRole === "admin" && (
+                                        <>
+                                            <NavLink
+                                                href={route("upload")}
+                                                active={route().current(
+                                                    "upload"
+                                                )}
+                                            >
+                                                Upload
+                                            </NavLink>
+                                            <NavLink
+                                                href={route("stats")}
+                                                active={route().current(
+                                                    "stats"
+                                                )}
+                                            >
+                                                Stats
+                                            </NavLink>{" "}
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -162,12 +178,22 @@ export default function Authenticated({ auth, header, children }) {
                             >
                                 Dashboard
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                href={route("upload")}
-                                active={route().current("upload")}
-                            >
-                                Upload
-                            </ResponsiveNavLink>
+                            {userRole === "admin" && (
+                                <>
+                                    <ResponsiveNavLink
+                                        href={route("upload")}
+                                        active={route().current("upload")}
+                                    >
+                                        Upload
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink
+                                        href={route("stats")}
+                                        active={route().current("stats")}
+                                    >
+                                        Stats
+                                    </ResponsiveNavLink>
+                                </>
+                            )}
                         </div>
 
                         <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

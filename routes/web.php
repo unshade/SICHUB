@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SubfolderController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Foundation\Application;
@@ -49,8 +50,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
+    Route::prefix('stats')->group(function () {
+        Route::get('/', [StatsController::class, 'index'])->name('stats');
+    });
+    Route::get('/video/{id}', [VideoController::class, 'serve'])->name('storage.serve');
 });
-Route::get('/video/{id}', [VideoController::class, 'serve'])->name('storage.serve');
 
 
 

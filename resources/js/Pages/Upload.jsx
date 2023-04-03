@@ -207,6 +207,7 @@ export default function Upload(props) {
                                                                     id="video"
                                                                     name="video"
                                                                     type="file"
+                                                                    accept="video/mp4"
                                                                     className="sr-only"
                                                                     onChange={(
                                                                         e
@@ -225,7 +226,7 @@ export default function Upload(props) {
                                                             </p>
                                                         </div>
                                                         <p className="text-xs text-gray-500 dark:text-gray-300">
-                                                            MP4, MOV ...
+                                                            MP4 UNIQUEMENT !
                                                         </p>
                                                     </div>
                                                 </div>

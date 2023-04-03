@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stats;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,8 @@ class VideoController extends Controller
     }
     function serve(Request $request, $id)
     {
+        $user = $request->user();
+        Log::log('info', 'User ' . $user->name . ' is watching video ' . $id);
         $video = Video::where('id', $id)->first();
 
         $path = Storage::path($video->path);
@@ -81,21 +84,32 @@ class VideoController extends Controller
 
             fclose($handle);
         };
-
+        $userId = $user->id;
+        $videoId = $video->id;
+        Stats::updateOrCreate(
+            ['user_id' => $userId, 'video_id' => $videoId],
+            ['watched' => true]
+        );
         return response()->stream($stream, 206, $headers);
     }
 
 
     function store(Request $request)
     {
-        Log::log('info', $request->all());
+        $user = $request->user();
+        if ($user->role != 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $this->validate($request, [
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'video' => 'required|mimes:mp4,mov,ogg,qt,webm,avi,wmv,flv,mpg,mpeg,3gp',
+            'video' => 'required|mimes:mp4',
             'folder' => 'required|string|max:255',
             'subfolder' => 'required|string|max:255',
         ]);
+        // if description is not provided, set it to null
+        if ($request->description == null) {
+            $request->description = '';
+        }
 
         $pathFile = Storage::putFile('public', $request->file('video'));
 
