@@ -25,6 +25,7 @@ class VideoController extends Controller
             'comments' => $comments,
         ]);
     }
+
     function serve(Request $request, $id)
     {
         $user = $request->user();
@@ -167,5 +168,18 @@ class VideoController extends Controller
             'content' => $comment,
         ]);
         return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
+    }
+
+    function destroy(Request $request, $id)
+    {
+        $user = $request->user();
+        if ($user->role != 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $video = Video::where('id', $id)->first();
+        $path = Storage::path($video->path);
+        Storage::delete($path);
+        $video->delete();
+        return redirect()->route('dashboard');
     }
 }

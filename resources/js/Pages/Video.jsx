@@ -5,14 +5,22 @@ import ReactPlayer from "react-player";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
+    TrashIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Video(props) {
-    const [like, setLike] = useState(props.stats?.liked ? props.stats.liked : false);
-    const [dislike, setDislike] = useState(props.stats?.disliked ? props.stats.disliked : false);
+    const [like, setLike] = useState(
+        props.stats?.liked ? props.stats.liked : false
+    );
+    const [dislike, setDislike] = useState(
+        props.stats?.disliked ? props.stats.disliked : false
+    );
     console.log(props.comments);
-    const {data, setData, post, processing, errors, reset} = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         comment: "",
+    });
+    const comments = props.comments.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
     });
     const handleCommentSubmit = (e) => {
         e.preventDefault();
@@ -23,7 +31,7 @@ export default function Video(props) {
                 reset("comment");
             },
         });
-    }
+    };
 
     return (
         <AuthenticatedLayout
@@ -82,7 +90,7 @@ export default function Video(props) {
                                 </span>
                             </button>
                             <button
-                                className={`${
+                                className={`mr-4 ${
                                     dislike
                                         ? "text-red-500 font-bold"
                                         : "text-gray-500"
@@ -110,6 +118,22 @@ export default function Video(props) {
                                     {props.video.dislikes}
                                 </span>
                             </button>
+                            {props.auth.user.role == "admin" && (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            router.delete(
+                                                `/video/${props.video.id}`,
+                                            );
+                                        }}
+                                    >
+                                        <span className="flex items-center text-red-600">
+                                            <TrashIcon className="h-5 w-5 mr-" />
+                                            Delete
+                                        </span>
+                                    </button>
+                                </>
+                            )}
                         </div>
 
                         <div className="dark:text-stone-200">
@@ -122,7 +146,9 @@ export default function Video(props) {
                             <textarea
                                 className="w-full h-20 p-2 border rounded"
                                 value={data.comment}
-                                onChange={(e) => setData("comment", e.target.value)}
+                                onChange={(e) =>
+                                    setData("comment", e.target.value)
+                                }
                                 placeholder="Add a comment..."
                             />
                             <button className="mt-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">
@@ -130,12 +156,37 @@ export default function Video(props) {
                             </button>
                         </form>
                         <div className="mt-4">
-                            {props.comments.map((comment, index) => (
+                            {comments.map((comment, index) => (
                                 <div
                                     key={index}
-                                    className="bg-gray-100 rounded-lg p-2"
+                                    className="bg-gray-100 rounded-lg p-4 mb-4 shadow-md"
                                 >
-                                    {comment.user.name} : {comment.content}
+                                    <div className="flex justify-between items-start">
+                                        <div className="text-gray-800 font-bold">
+                                            {comment.user.name} (
+                                            {comment.user.email})
+                                        </div>
+                                        <div className="text-gray-600 text-sm">
+                                            {new Date(
+                                                comment.created_at
+                                            ).toLocaleString()}
+                                        </div>
+                                    </div>
+                                    <div className="mt-2 text-gray-700">
+                                        {comment.content}
+                                    </div>
+                                    <div className="mt-3 flex items-center space-x-2">
+                                        <button className="text-blue-600 hover:underline">
+                                            Reply
+                                        </button>
+                                        {/* {currentUser &&
+                                            currentUser.id ===
+                                                comment.user.id && (
+                                                <button className="text-red-600 hover:underline">
+                                                    Supprimer
+                                                </button>
+                                            )} */}
+                                    </div>
                                 </div>
                             ))}
                         </div>
