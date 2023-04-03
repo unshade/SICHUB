@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import ReactPlayer from "react-player";
 
 export default function Video(props) {
     return (
@@ -16,10 +17,12 @@ export default function Video(props) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <video
-                        src={props.video.url}
                         controls
                         className="w-full h-auto"
-                    ></video>
+                        preload="metadata"
+                    >
+                        <source src={`/video/${props.video.id}`} type="video/mp4" />
+                    </video>
                 </div>
             </div>
         </AuthenticatedLayout>
