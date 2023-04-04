@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('video_id')->constrained('videos');
+            $table->foreignId('video_id')->constrained('videos')->onDelete('cascade');
             $table->string('content');
         });
     }
