@@ -177,8 +177,7 @@ class VideoController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $video = Video::where('id', $id)->first();
-        $path = Storage::path($video->path);
-        Storage::delete($path);
+        Storage::delete($video->path);
         $video->delete();
         return redirect()->route('dashboard');
     }
