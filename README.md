@@ -91,7 +91,7 @@ MEILISEARCH_HOST=http://meilisearch:7700
     - Si une erreur survient, la lire, puis regarder les plugins PHP à activer (depuis php.ini)
     - Si le problème persiste, downgrade OpenSSL
   - `php artisan sail:install`
-  - `alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail`
+  - `alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'`
   - Restart le terminal
 
 - Lancer les containers :
