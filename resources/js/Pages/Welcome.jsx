@@ -46,9 +46,9 @@ export default function Welcome(props) {
                             />
                         </svg>
                     </div>
-
-
-
+                    <div className='mt-3 dark:text-stone-200'>
+                        Contribute on <a href="https://github.com/unshade/SICHUB" className='text-blue-700' target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
                 </div>
             </div>
 
