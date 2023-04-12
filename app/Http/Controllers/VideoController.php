@@ -184,7 +184,7 @@ class VideoController extends Controller
         $video = Video::where('id', $id)->first();
         Storage::delete($video->path);
         $video->delete();
-        return redirect()->route('dashboard');
+        return;
     }
 
     public function setPrivacy(Request $request)
@@ -235,6 +235,26 @@ class VideoController extends Controller
                 $video->save();
             }
         }
+    }
+
+    public function move(Request $request)
+    {
+
+        $request->validate([
+            'id' => 'required',
+            'id_folder' => 'required',
+        ]);
+
+        $user = $request->user();
+        if ($user->role != 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $video = Video::where('id', $request->id)->first();
+        $video->id_folder = $request->id_folder;
+        $video->save();
+
+        return;
     }
 
     public function getFolderIdFromPath($path)

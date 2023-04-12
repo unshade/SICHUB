@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{id}/comment', [VideoController::class, 'commentStore'])->name('video.comment.store');
         Route::delete('/{id}', [VideoController::class, 'destroy'])->name('video.destroy');
         Route::post('/privacy', [VideoController::class, 'setPrivacy'])->name('video.privacy');
+        Route::post('/move', [VideoController::class, 'move'])->name('video.move');
     });
 });
 
