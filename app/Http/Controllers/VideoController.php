@@ -16,11 +16,10 @@ class VideoController extends Controller
 
     function index($path)
     {
-        $subfolders = explode('/', $path);
 
-        $videoTitle = array_pop($subfolders);
+        $videoTitle = basename($path);
 
-        $parentFolderId = $this->getFolderIdFromPath($subfolders);
+        $parentFolderId = $this->getFolderIdFromPath(dirname($path));
 
         $video = Video::where('title', $videoTitle)->where('id_folder', $parentFolderId)->first();
         $stats = Stats::where('video_id', $video->id)->first();
@@ -132,7 +131,7 @@ class VideoController extends Controller
         $video->url = Storage::url($pathFile);
         $video->description = $request->description;
         $video->thumbnail = 'https://i.ytimg.com/vi/N9uTi3R4jlo/maxresdefault.jpg';
-        $video->id_folder = $request->path != null ? $this->getFolderIdFromPath(explode('/', $request->path)) : null;
+        $video->id_folder = $this->getFolderIdFromPath($request->path);
         $video->save();
 
         $request->session()->flash('success', 'Video has been successfully uploaded.');
@@ -238,8 +237,14 @@ class VideoController extends Controller
         }
     }
 
-    public function getFolderIdFromPath($subfolderNames)
+    public function getFolderIdFromPath($path)
     {   
+
+        if ($path == null || $path == '.') {
+            return null;
+        }
+
+        $subfolderNames = explode('/', $path);
 
         $parentId = null;
         foreach ($subfolderNames as $subfolderName) {
