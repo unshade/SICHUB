@@ -31,19 +31,22 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
-        Route::get('/{name}', [FolderController::class, 'index'])->name('folder');
-        Route::get('/{folderName}/{subfolderName}', [SubfolderController::class, 'index'])->name('subfolder');
-        Route::get('/{folderName}/{subfolderName}/{id}', [VideoController::class, 'index'])->name('video.page');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/{path}', [FolderController::class, 'index'])->where('path', '.*')->name('folder.page');
     });
 
-    Route::get('/upload', function () {
-        return Inertia::render('Upload');
-    })->name('upload');
+    Route::get('/file/{path}', [VideoController::class, 'index'])->where('path', '.*')->name('video.page');
 
-    Route::post('/upload', [VideoController::class, 'store'])->name('upload.store');
+    Route::prefix('folder')->group(function () {
+ 
+        Route::post('/', [FolderController::class, 'store'])->name('folder.store');
+        Route::post('/privacy', [FolderController::class, 'setPrivacy'])->name('folder.privacy');
+        Route::delete('/{id}', [FolderController::class, 'destroy'])->name('folder.destroy');
+
+    });
+    
 
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -54,10 +57,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [StatsController::class, 'index'])->name('stats');
     });
     Route::prefix('video')->group(function () {
+        Route::post('/', [VideoController::class, 'store'])->name('video.store');
         Route::get('/{id}', [VideoController::class, 'serve'])->name('storage.serve');
         Route::post('/{id}/like', [VideoController::class, 'like'])->name('video.like');
         Route::post('/{id}/comment', [VideoController::class, 'commentStore'])->name('video.comment.store');
         Route::delete('/{id}', [VideoController::class, 'destroy'])->name('video.destroy');
+        Route::post('/privacy', [VideoController::class, 'setPrivacy'])->name('video.privacy');
     });
 });
 

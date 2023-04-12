@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Stats;
 use App\Models\Video;
+use App\Models\Folders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -13,13 +14,20 @@ use Inertia\Inertia;
 class VideoController extends Controller
 {
 
-    function index($folderName, $subfolderName, $id)
+    function index($path)
     {
-        $video = Video::where('folder', $folderName)->where('subfolder', $subfolderName)->where('id', $id)->first();
-        $stats = Stats::where('video_id', $id)->first();
+        $subfolders = explode('/', $path);
+
+        $videoTitle = array_pop($subfolders);
+
+        $parentFolderId = $this->getFolderIdFromPath($subfolders);
+
+        $video = Video::where('title', $videoTitle)->where('id_folder', $parentFolderId)->first();
+        $stats = Stats::where('video_id', $video->id)->first();
         // get comments joined with user (only select name and email)
-        $comments = Comment::where('video_id', $id)->with('user:id,name,email')->get();
+        $comments = Comment::where('video_id', $video->id)->with('user:id,name,email')->get();
         return Inertia::render('Video', [
+            'path' => $path,
             'video' => $video,
             'stats' => $stats,
             'comments' => $comments,
@@ -109,8 +117,6 @@ class VideoController extends Controller
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'video' => 'required|mimes:mp4',
-            'folder' => 'required|string|max:255',
-            'subfolder' => 'required|string|max:255',
         ]);
         // if description is not provided, set it to null
         if ($request->description == null) {
@@ -119,18 +125,18 @@ class VideoController extends Controller
 
         $pathFile = Storage::putFile('public', $request->file('video'));
 
+
         $video = new Video();
         $video->title = $request->title;
         $video->path = $pathFile;
         $video->url = Storage::url($pathFile);
         $video->description = $request->description;
         $video->thumbnail = 'https://i.ytimg.com/vi/N9uTi3R4jlo/maxresdefault.jpg';
-        $video->folder = $request->folder;
-        $video->subfolder = $request->subfolder;
+        $video->id_folder = $request->path != null ? $this->getFolderIdFromPath(explode('/', $request->path)) : null;
         $video->save();
 
         $request->session()->flash('success', 'Video has been successfully uploaded.');
-        return redirect()->route('upload')->with('notification', 'Video has been successfully uploaded.');
+        return;
 
     }
 
@@ -148,7 +154,7 @@ class VideoController extends Controller
             ['user_id' => $userId, 'video_id' => $videoId],
             ['liked' => $like, 'disliked' => $dislike]
         );
-        return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
+        return;
     }
 
     function commentStore(Request $request, $id)
@@ -167,7 +173,7 @@ class VideoController extends Controller
             'video_id' => $videoId,
             'content' => $comment,
         ]);
-        return redirect()->route('video.page', ['folderName' => $video->folder, 'subfolderName' => $video->subfolder, 'id' => $id]);
+        return;
     }
 
     function destroy(Request $request, $id)
@@ -180,5 +186,70 @@ class VideoController extends Controller
         Storage::delete($video->path);
         $video->delete();
         return redirect()->route('dashboard');
+    }
+
+    public function setPrivacy(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'is_public' => 'required',
+        ]);
+
+        $user = $request->user();
+        if ($user->role != 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $video = Video::where('id', $request->id)->first();
+        $video->is_public = $request->is_public;
+        $video->save();
+
+        $folder = Folders::where('id', $video->id_folder)->first();
+        if ($request->is_public && $folder != null && $folder->is_public == false) {
+            $folder->is_public = true;
+            $folder->save();
+            $this->handlePrivacy($folder, true);
+        }
+
+        return;
+    }
+
+    private function handlePrivacy($folder, $is_public)
+    {
+        if($is_public){
+            $parentFolder = Folders::where('id', $folder->id_folder_parent)->first();
+            if($parentFolder != null && $parentFolder->is_public == false){
+                $parentFolder->is_public = true;
+                $parentFolder->save();
+                $this->handlePrivacy($parentFolder, true);
+            }
+        }else {
+            $folders = Folders::where('id_folder_parent', $folder->id)->get();
+            foreach ($folders as $folder) {
+                $folder->is_public = false;
+                $folder->save();
+                $this->handlePrivacy($folder, false);
+            }
+            $videos = Video::where('id_folder', $folder->id)->get();
+            foreach ($videos as $video) {
+                $video->is_public = false;
+                $video->save();
+            }
+        }
+    }
+
+    public function getFolderIdFromPath($subfolderNames)
+    {   
+
+        $parentId = null;
+        foreach ($subfolderNames as $subfolderName) {
+            $folder = Folders::where('name', $subfolderName)->where('id_folder_parent', $parentId)->first();
+            if (!$folder) {
+                abort(404, "Le dossier '$subfolderName' n'existe pas dans le chemin '$path'.");
+            }
+            $parentId = $folder->id;
+        }
+
+        return $parentId;
     }
 }

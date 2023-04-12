@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('videos', function (Blueprint $table) {
+        Schema::create('folders', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->string('url');
-            $table->string('path');
-            $table->string('thumbnail');
-            $table->string('folder');
-            $table->string('subfolder');
+            $table->string('name');
+            $table->foreignId('id_folder_parent')->nullable()->constrained('folders')->onDelete('cascade');
+            $table->boolean('is_public')->default(false);
             $table->timestamps();
+
+            $table->unique(['name', 'id_folder_parent']);
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('videos');
+        Schema::dropIfExists('folders');
     }
 };

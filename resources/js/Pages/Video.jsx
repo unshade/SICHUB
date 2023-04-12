@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, useForm, router, Link } from "@inertiajs/react";
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import {
@@ -33,14 +33,42 @@ export default function Video(props) {
         });
     };
 
+    const previousPath = props.path
+    ? route("folder.page", {
+            path: props.path.split("/").slice(0, -1).join("/"),
+        })
+    : route("dashboard");
+
+
     return (
         <AuthenticatedLayout
             auth={props.auth}
             errors={props.errors}
             header={
+                <div className="flex items-center space-x-4">
+                <Link href={previousPath}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                        />
+                    </svg>
+
+
+
+                </Link>
                 <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {`${props.video.folder} / ${props.video.subfolder} / ${props.video.title}`}
-                </h2>
+                Dashboard/{props.path}.mp4
+            </h2>
+            </div>
             }
         >
             <Head title={props.folderName} />
@@ -118,22 +146,7 @@ export default function Video(props) {
                                     {props.video.dislikes}
                                 </span>
                             </button>
-                            {props.auth.user.role == "admin" && (
-                                <>
-                                    <button
-                                        onClick={() => {
-                                            router.delete(
-                                                `/video/${props.video.id}`,
-                                            );
-                                        }}
-                                    >
-                                        <span className="flex items-center text-red-600">
-                                            <TrashIcon className="h-5 w-5 mr-" />
-                                            Delete
-                                        </span>
-                                    </button>
-                                </>
-                            )}
+                            
                         </div>
 
                         <div className="dark:text-stone-200">

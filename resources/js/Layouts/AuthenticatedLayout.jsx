@@ -42,15 +42,7 @@ export default function Authenticated({ auth, header, children }) {
                                         Dashboard
                                     </NavLink>
                                     {userRole === "admin" && (
-                                        <>
-                                            <NavLink
-                                                href={route("upload")}
-                                                active={route().current(
-                                                    "upload"
-                                                )}
-                                            >
-                                                Upload
-                                            </NavLink>
+                                        
                                             <NavLink
                                                 href={route("stats")}
                                                 active={route().current(
@@ -58,8 +50,8 @@ export default function Authenticated({ auth, header, children }) {
                                                 )}
                                             >
                                                 Stats
-                                            </NavLink>{" "}
-                                        </>
+                                            </NavLink>
+                                    
                                     )}
                                 </div>
                             </div>
@@ -179,20 +171,15 @@ export default function Authenticated({ auth, header, children }) {
                                 Dashboard
                             </ResponsiveNavLink>
                             {userRole === "admin" && (
-                                <>
-                                    <ResponsiveNavLink
-                                        href={route("upload")}
-                                        active={route().current("upload")}
-                                    >
-                                        Upload
-                                    </ResponsiveNavLink>
+                                
+                                    
                                     <ResponsiveNavLink
                                         href={route("stats")}
                                         active={route().current("stats")}
                                     >
                                         Stats
                                     </ResponsiveNavLink>
-                                </>
+                                
                             )}
                         </div>
 
