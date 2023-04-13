@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router, useForm } from "@inertiajs/react";
 import { FolderIcon } from "@heroicons/react/24/outline";
 import Modal from "@/Components/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ArrowLeftIcon,
     EyeIcon,
@@ -21,7 +21,14 @@ import { Droppable } from "@/Components/Droppable";
 import Draggable from "@/Components/Draggable";
 
 export default function Dashboard(props) {
+    
     const userRole = props.auth.user.role;
+
+    const [videos, setVideos] = useState(props.videos);
+
+    useEffect(() => {
+        setVideos(props.videos);
+    }, [props.videos]);
 
     const [open, setOpen] = useState(false);
     const [openVideo, setOpenVideo] = useState(false);
@@ -39,6 +46,30 @@ export default function Dashboard(props) {
             },
         })
     );
+
+    const [activeId, setActiveId] = useState(null);
+
+    const handleDragStart = (event) => {
+        setActiveId(event.active.id);
+    };
+
+
+    const handleDragEnd = (event) => {
+        setActiveId(null);
+        const { active, over } = event;
+
+        if (over) {
+            
+            setVideos(videos.filter((video) => video.id !== active.id));
+            router.post(route("video.move"), {
+                id: active.id,
+                id_folder: over.id,
+            });
+        }
+    };
+
+
+
 
     return (
         <AuthenticatedLayout
@@ -90,7 +121,7 @@ export default function Dashboard(props) {
                         role="list"
                         className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
                     >
-                        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+                        <DndContext onDragEnd={handleDragEnd} sensors={sensors} onDragStart={handleDragStart}>
                             <DisplayFolders
                                 folders={props.folders}
                                 path={props.path}
@@ -98,9 +129,10 @@ export default function Dashboard(props) {
                             />
 
                             <DisplayVideos
-                                videos={props.videos}
+                                videos={videos}
                                 path={props.path}
                                 userRole={userRole}
+                                activeId={activeId}
                             />
                         </DndContext>
                     </ul>
@@ -118,18 +150,6 @@ export default function Dashboard(props) {
             />
         </AuthenticatedLayout>
     );
-
-    function handleDragEnd(event) {
-        const { over } = event;
-        console.log({ event });
-
-        if (over) {
-            router.post(route("video.move"), {
-                id: event.active.id,
-                id_folder: over.id,
-            });
-        }
-    }
 }
 
 function DisplayFolders({ folders, path, userRole }) {
@@ -211,12 +231,13 @@ function DisplayFolders({ folders, path, userRole }) {
     );
 }
 
-function DisplayVideos({ videos, path, userRole }) {
+function DisplayVideos({ videos, path, userRole, activeId }) {
     return (
         <>
             {videos.map((file, index) => (
                 <li key={index} className="relative">
                     <Draggable id={file.id} key={file.id}>
+
                         <Link
                             href={route("video.page", {
                                 path: path
@@ -224,11 +245,12 @@ function DisplayVideos({ videos, path, userRole }) {
                                     : file.title,
                             })}
                         >
-                            <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-gray-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                            <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100 ">
                                 <img
                                     src={file.thumbnail}
                                     alt=""
-                                    className="pointer-events-none object-cover group-hover:opacity-75"
+                                    
+                                    className={`pointer-events-none object-cover ${activeId === file.id ? "" : "group-hover:opacity-75"}`}
                                 />
                                 <button
                                     type="button"
