@@ -3,7 +3,7 @@
 # Description rapide
 Petite appli web pour simplifier la vie de M. Tomczac. 
 Le but est qu'il puisse gérer simplement l'upload de vidéos et de voir qui regarde quoi.
-Le front a été fait rapidos, si vous voulez le changer faites vous plaiz.
+N'hésitez pas à changer, ajouter des choses, ça peut donner un truc rigolo. Faites juste une PR et je l'accepte
 
 # Specs techniques
 - Lang : PHP
