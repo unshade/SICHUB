@@ -211,7 +211,7 @@ export default function VideoModal({ open, onClose, props }) {
                     </form>
                 </div>
             ) : (
-                <div className="flex items-center justify-center flex-col max-w-xs h-screen w-full mx-auto font-semibold text-lg">
+                <div className="flex items-center justify-center flex-col max-w-xs h-screen w-full mx-auto font-semibold text-lg text-slate-200">
                     {progress.percentage != 100 ? (
                         <div className="mx-auto">{progress.percentage} %</div>
                     ) : (
